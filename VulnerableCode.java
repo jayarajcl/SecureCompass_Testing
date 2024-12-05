@@ -1,42 +1,21 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-    import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Scanner;
 
-public class VulnerableCode {
+Enter User ID User ID: 
 
-    public static void main(String[] args) {
-        // Hardcoded credentials (vulnerability)
-        String dbUrl = "jdbc:mysql://localhost:3306/mydb";
-        String username = "admin";
-        String password = "password123";
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Enter username:");
-            String userInput = scanner.nextLine();
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-            // Vulnerable SQL query (SQL Injection)
-            String query = "SELECT * FROM users WHERE username = '" + userInput + "'";
-
-            // Establishing database connection
-            Connection connection = DriverManager.getConnection(dbUrl, username, password);
-            Statement statement = connection.createStatement();
-
-            // Executing the vulnerable query
-            ResultSet resultSet = statement.executeQuery(query);
-
-            if (resultSet.next()) {
-                System.out.println("Welcome, " + resultSet.getString("username") + "!");
-            } else {
-                System.out.println("User not found.");
-            }
-
-        } catch (Exception e) {
-            // Generic exception handling (vulnerability)
-            e.printStackTrace();
-        }
-    }
+public class ViewProfileServlet {
+public void doGet(HttpServletRequest request) {
+String userId = request.getParameter("userId");
+try {
+// IDOR vulnerability: No authorization check
+String profile = "SELECT * FROM users WHERE id=" + userId;
+System.out.println(profile);
+} catch (Exception e) {
+e.printStackTrace();
 }
-
+}
+}
